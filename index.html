@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Linha do tempo dos sistemas operacionais</title>
+<meta name="description" content="Setenta anos de sistemas operacionais, de 1956 a 2026: do processamento em lote aos sistemas integrados com inteligência artificial.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<script>document.documentElement.className = "js";</script>
+</head>
+<body>
+
+<div class="scrubber" aria-hidden="true">
+  <div class="scrubber-track"><div class="scrubber-fill"></div></div>
+  <p class="scrubber-year">1956</p>
+</div>
+
+<header class="masthead">
+  <h1>Linha do tempo dos<br>sistemas operacionais</h1>
+  <p class="standfirst">Setenta anos entre o processamento em lote e os sistemas assistidos por
+  inteligência artificial. Vinte e um marcos que mudaram a forma como o computador organiza
+  o próprio trabalho.</p>
+</header>
+
+<section class="lineage" aria-labelledby="lineage-title">
+  <h2 id="lineage-title">Linhagens</h2>
+  <p class="lineage-intro">Cada faixa é uma família de sistemas; cada marcador, um marco da
+  linha do tempo abaixo. Escolha um marcador para ir até ele.<span class="chart-hint">
+  Arraste o diagrama para os lados.</span></p>
+  <div class="chart-scroll">
+    <div id="chart" class="chart" data-from="1956" data-to="2026"></div>
+  </div>
+</section>
+
+<main class="timeline">
+
+  <section class="era" style="--era: var(--era-1)">
+    <div class="era-head">
+      <p class="era-span">1956&ndash;1964</p>
+      <h2>Processamento em lote e tempo compartilhado</h2>
+    </div>
+    <div class="entries">
+
+      <article class="entry" id="a1956" data-year="1956" data-lane="mainframe" data-short="GM-NAA I/O">
+        <p class="entry-year">1956</p>
+        <div class="entry-body">
+          <h3>GM-NAA I/O</h3>
+          <p>Considerado um dos primeiros sistemas operacionais conhecidos. Automatizou a execução
+          de programas, permitindo que os trabalhos fossem processados sequencialmente com menor
+          necessidade de intervenção manual.</p>
+        </div>
+      </article>
+
+      <article class="entry" id="a1961" data-year="1961" data-lane="mainframe" data-short="CTSS">
+        <p class="entry-year">1961</p>
+        <div class="entry-body">
+          <h3>CTSS</h3>
+          <p>Introduziu o conceito de compartilhamento de tempo (<i>time-sharing</i>). Vários
+          usuários podiam utilizar o mesmo computador de forma interativa, compartilhando o tempo
+          de processamento.</p>
+        </div>
+      </article>
+
+      <article class="entry" id="a1964" data-year="1964" data-lane="mainframe" data-short="IBM OS/360">
+        <p class="entry-year">1964</p>
+        <div class="entry-body">
+          <h3>IBM OS/360</h3>
+          <p>Introduziu recursos de multiprogramação, permitindo que vários programas
+          permanecessem na memória e que o processador alternasse entre eles, aumentando o
+          aproveitamento dos recursos do computador.</p>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <section class="era" style="--era: var(--era-2)">
+    <div class="era-head">
+      <p class="era-span">1969&ndash;1977</p>
+      <h2>UNIX, portabilidade e os primeiros microcomputadores</h2>
+    </div>
+    <div class="entries">
+
+      <article class="entry" id="a1969" data-year="1969" data-lane="unix" data-short="UNIX">
+        <p class="entry-year">1969</p>
+        <div class="entry-body">
+          <h3>UNIX</h3>
+          <p>Desenvolvido nos Bell Labs, o UNIX consolidou conceitos importantes como processos,
+          sistema de arquivos, multitarefa, ambiente multiusuário e <i>shell</i>, tornando-se uma
+          das principais influências para sistemas operacionais posteriores.</p>
+        </div>
+      </article>
+
+      <article class="entry" id="a1973" data-year="1973" data-lane="unix" data-short="UNIX em C">
+        <p class="entry-year">1973</p>
+        <div class="entry-body">
+          <h3>UNIX é reescrito em C</h3>
+          <p>O UNIX passa a ser escrito principalmente na linguagem C. Essa mudança aumentou sua
+          portabilidade, permitindo que o sistema fosse adaptado para diferentes arquiteturas de
+          computadores com menos esforço.</p>
+        </div>
+      </article>
+
+      <article class="entry" id="a1974" data-year="1974" data-lane="pc" data-short="CP/M">
+        <p class="entry-year">1974</p>
+        <div class="entry-body">
+          <h3>CP/M</h3>
+          <p>Um dos primeiros sistemas operacionais voltados aos microcomputadores. Oferecia
+          recursos de gerenciamento de arquivos e execução de programas por meio de comandos
+          de texto.</p>
+        </div>
+      </article>
+
+      <article class="entry" id="a1977" data-year="1977" data-lane="unix" data-short="BSD">
+        <p class="entry-year">1977</p>
+        <div class="entry-body">
+          <h3>BSD</h3>
+          <p>Surge o <i>Berkeley Software Distribution</i> (BSD), uma evolução do UNIX desenvolvida
+          na Universidade da Califórnia, Berkeley. O projeto incorporou melhorias ao UNIX e teve
+          grande influência no desenvolvimento posterior de sistemas baseados nessa família.</p>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <section class="era" style="--era: var(--era-3)">
+    <div class="era-head">
+      <p class="era-span">1981&ndash;1985</p>
+      <h2>O computador pessoal</h2>
+    </div>
+    <div class="entries">
+
+      <article class="entry" id="a1981" data-year="1981" data-lane="pc" data-short="MS-DOS">
+        <p class="entry-year">1981</p>
+        <div class="entry-body">
+          <h3>MS-DOS</h3>
+          <p>O MS-DOS tornou-se o sistema operacional utilizado nos computadores IBM PC.
+          Popularizou o uso de linha de comando, gerenciamento de arquivos e execução de
+          programas em computadores pessoais.</p>
+        </div>
+      </article>
+
+      <article class="entry" id="a1984" data-year="1984" data-lane="apple" data-short="Macintosh">
+        <p class="entry-year">1984</p>
+        <div class="entry-body">
+          <h3>Macintosh System Software</h3>
+          <p>A Apple populariza uma interface gráfica baseada em janelas, ícones, menus e mouse,
+          tornando a interação com o computador mais acessível para usuários sem conhecimento
+          de comandos de texto.</p>
+        </div>
+      </article>
+
+      <article class="entry" id="a1985" data-year="1985" data-lane="windows" data-short="Windows 1.0">
+        <p class="entry-year">1985</p>
+        <div class="entry-body">
+          <h3>Windows 1.0</h3>
+          <p>A Microsoft lança o Windows 1.0, oferecendo um ambiente de interface gráfica sobre o
+          MS-DOS. Introduziu recursos como janelas, menus, ícones e suporte ao mouse.</p>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <section class="era" style="--era: var(--era-4)">
+    <div class="era-head">
+      <p class="era-span">1991&ndash;2001</p>
+      <h2>Código aberto, redes e maturidade</h2>
+    </div>
+    <div class="entries">
+
+      <article class="entry" id="a1991" data-year="1991" data-lane="linux" data-short="Linux">
+        <p class="entry-year">1991</p>
+        <div class="entry-body">
+          <h3>Linux</h3>
+          <p>Linus Torvalds inicia o desenvolvimento do Linux. O projeto se destaca pelo modelo de
+          software livre e código aberto, permitindo que seu código fosse estudado, modificado
+          e distribuído.</p>
+        </div>
+      </article>
+
+      <article class="entry" id="a1993" data-year="1993" data-lane="windows" data-short="Windows NT">
+        <p class="entry-year">1993</p>
+        <div class="entry-body">
+          <h3>Windows NT</h3>
+          <p>A Microsoft lança o Windows NT, desenvolvido com uma arquitetura mais robusta para
+          ambientes profissionais. Trouxe melhorias relacionadas à segurança, estabilidade,
+          multitarefa, gerenciamento de memória e redes.</p>
+        </div>
+      </article>
+
+      <article class="entry" id="a1995" data-year="1995" data-lane="windows" data-short="Windows 95">
+        <p class="entry-year">1995</p>
+        <div class="entry-body">
+          <h3>Windows 95</h3>
+          <p>Popularizou recursos como o Menu Iniciar, barra de tarefas e <i>Plug and Play</i>,
+          facilitando a utilização do sistema e a instalação e configuração de dispositivos
+          de hardware.</p>
+        </div>
+      </article>
+
+      <article class="entry" id="a2001-xp" data-year="2001" data-lane="windows" data-short="Windows XP">
+        <p class="entry-year">2001</p>
+        <div class="entry-body">
+          <h3>Windows XP</h3>
+          <p>Reuniu diferentes linhas do Windows em um sistema mais unificado. Trouxe melhorias de
+          estabilidade, segurança, interface gráfica, gerenciamento de hardware e conectividade
+          de rede e internet.</p>
+        </div>
+      </article>
+
+      <article class="entry" id="a2001-macosx" data-year="2001" data-lane="apple" data-short="Mac OS X">
+        <p class="entry-year">2001</p>
+        <div class="entry-body">
+          <h3>Mac OS X</h3>
+          <p>A Apple lança o Mac OS X, baseado em tecnologias UNIX. O sistema combinava uma base
+          UNIX com uma interface gráfica moderna, oferecendo recursos de multitarefa, proteção
+          de memória e maior estabilidade.</p>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <section class="era" style="--era: var(--era-5)">
+    <div class="era-head">
+      <p class="era-span">2007&ndash;2011</p>
+      <h2>Mobilidade e nuvem</h2>
+    </div>
+    <div class="entries">
+
+      <article class="entry" id="a2007" data-year="2007" data-lane="mobile" data-short="iPhone OS">
+        <p class="entry-year">2007</p>
+        <div class="entry-body">
+          <h3>iPhone OS (atual iOS)</h3>
+          <p>A Apple apresenta o iPhone com um sistema operacional desenvolvido para dispositivos
+          móveis e uma interface multitoque, permitindo uma nova forma de interação diretamente
+          pela tela.</p>
+        </div>
+      </article>
+
+      <article class="entry" id="a2008" data-year="2008" data-lane="mobile" data-short="Android">
+        <p class="entry-year">2008</p>
+        <div class="entry-body">
+          <h3>Android</h3>
+          <p>O Android começa a ser utilizado comercialmente em smartphones. Baseado no kernel
+          Linux, trouxe uma plataforma móvel flexível, suporte a aplicativos e possibilidade de
+          utilização em dispositivos de diferentes fabricantes.</p>
+        </div>
+      </article>
+
+      <article class="entry" id="a2011" data-year="2011" data-lane="mobile" data-short="Chrome OS">
+        <p class="entry-year">2011</p>
+        <div class="entry-body">
+          <h3>Chrome OS</h3>
+          <p>O Google apresenta o Chrome OS, desenvolvido com foco em aplicações Web, serviços
+          online e computação em nuvem, utilizando o navegador como elemento central
+          da experiência.</p>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <section class="era" style="--era: var(--era-6)">
+    <div class="era-head">
+      <p class="era-span">2015&ndash;2026</p>
+      <h2>Atualização contínua e inteligência artificial</h2>
+    </div>
+    <div class="entries">
+
+      <article class="entry" id="a2015" data-year="2015" data-lane="windows" data-short="Windows 10">
+        <p class="entry-year">2015</p>
+        <div class="entry-body">
+          <h3>Windows 10</h3>
+          <p>A Microsoft passa a adotar um modelo de atualizações contínuas, permitindo que o
+          sistema receba regularmente novos recursos, melhorias e atualizações de segurança.</p>
+        </div>
+      </article>
+
+      <article class="entry" id="a2023" data-year="2023" data-lane="windows" data-short="Windows 11 e IA">
+        <p class="entry-year">2023</p>
+        <div class="entry-body">
+          <h3>Windows 11 e inteligência artificial</h3>
+          <p>A Microsoft começa a integrar inteligência artificial diretamente ao Windows por meio
+          do Copilot, oferecendo recursos de assistência, produtividade e interação com o
+          sistema operacional.</p>
+        </div>
+      </article>
+
+      <article class="entry entry-last" id="a2026" data-year="2026">
+        <p class="entry-year">2026</p>
+        <div class="entry-body">
+          <h3>Sistemas operacionais inteligentes e integrados</h3>
+          <p>A evolução atual combina inteligência artificial, computação em nuvem, segurança
+          avançada, virtualização e integração entre diferentes dispositivos. Os sistemas
+          operacionais passam a atuar não apenas como gerenciadores de hardware e software,
+          mas também como plataformas integradas de serviços e recursos inteligentes.</p>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+</main>
+
+<footer class="colophon">
+  <p>Trabalho da disciplina de Sistemas Operacionais.</p>
+  <p class="colophon-meta">Vinte e um marcos, de 1956 a 2026.</p>
+</footer>
+
+<script src="chart.js"></script>
+<script src="scroll.js"></script>
+</body>
+</html>
