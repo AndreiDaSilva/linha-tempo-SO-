@@ -1,6 +1,6 @@
 # Linha do tempo dos sistemas operacionais
 
-Página estática com 21 marcos da história dos sistemas operacionais, de 1956 a 2026.
+Página estática com 28 marcos da história dos sistemas operacionais, de 1956 a 2026.
 O conteúdo vem do documento `Linha do Tempo SO.docx`.
 
 ## Publicar no GitHub Pages
@@ -36,12 +36,38 @@ E acessar `http://localhost:8000`.
 | `styles.css` | Cores, tipografia e layout |
 | `chart.js` | Monta o diagrama de linhagens a partir do HTML |
 | `scroll.js` | Acende cada marco conforme a rolagem e move o cursor de ano |
+| `editor.html` | Página de configuração para acrescentar marcos |
+| `editor.css`, `editor.js` | Estilo e lógica da página de configuração |
 | `.nojekyll` | Impede o GitHub de processar a pasta com o Jekyll |
 
 O texto fica todo no `index.html`. Os scripts leem o próprio HTML, então
 sem JavaScript a linha do tempo continua completa — só o diagrama não aparece.
 
-## Editar
+## Acrescentar um marco pela página de configuração
+
+Abra `editor.html` — publicado em
+`https://andreidasilva.github.io/linha-tempo-SO-/editor.html`, ou local com
+`python3 -m http.server` e depois `http://localhost:8000/editor.html`.
+
+Preencha ano, título, descrição e faixa do diagrama. A lista ao lado mostra em tempo real
+onde o marco vai entrar. Ao confirmar, a página monta um `index.html` completo para baixar:
+o marco entra na época certa e na posição cronológica correta, o intervalo de anos do título
+da época se ajusta e a contagem de marcos é reescrita por extenso.
+
+O site é estático, então **a página não grava nada no servidor**. Depois de baixar:
+
+```bash
+# substitua o index.html da pasta pelo arquivo baixado, então:
+git add index.html
+git commit -m "Novo marco"
+git push
+```
+
+Abrir o `editor.html` com duplo clique não funciona: o navegador bloqueia a leitura de
+arquivos locais. Nesse caso a própria página oferece um seletor para escolher o
+`index.html` à mão.
+
+## Editar à mão
 
 **Mudar um texto:** procure o ano no `index.html` e edite o `<h3>` e o `<p>`.
 
@@ -59,7 +85,7 @@ sem JavaScript a linha do tempo continua completa — só o diagrama não aparec
 
 - `id` precisa ser único (o diagrama usa isso para rolar até o marco).
 - `data-lane` diz em qual faixa do diagrama o marcador aparece. Os valores
-  disponíveis são `mainframe`, `unix`, `pc`, `apple`, `windows`, `linux` e `mobile`,
+  disponíveis são `mainframe`, `unix`, `pc`, `vms`, `apple`, `windows`, `linux` e `mobile`,
   definidos no topo do `chart.js`. Sem `data-lane`, o marco entra na linha do tempo
   mas não ganha marcador no diagrama.
 - `data-short` é o nome curto que aparece ao passar o mouse no marcador.

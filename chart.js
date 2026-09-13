@@ -14,6 +14,7 @@
     { id: 'mainframe', name: 'Mainframes', start: 1956, end: 1972 },
     { id: 'unix',      name: 'UNIX e derivados',  start: 1969, end: 2026 },
     { id: 'pc',        name: 'CP/M e MS-DOS',     start: 1974, end: 1995 },
+    { id: 'vms',       name: 'VMS',                start: 1977, end: 2000 },
     { id: 'apple',     name: 'Apple',             start: 1984, end: 2026 },
     { id: 'windows',   name: 'Windows',           start: 1985, end: 2026 },
     { id: 'linux',     name: 'Linux',             start: 1991, end: 2026 },
@@ -25,7 +26,7 @@
   /* Âncoras da rampa de matiz: o ano em que cada época começa.
      Uma faixa recebe um gradiente com todas elas, posicionadas em relação
      ao seu próprio início e fim — então mostra as cores das épocas que atravessou. */
-  var RAMP = [1956, 1969, 1981, 1991, 2007, 2015];
+  var RAMP = [1956, 1969, 1981, 1990, 2007, 2015];
 
   function ramp(start, end) {
     var span = end - start;

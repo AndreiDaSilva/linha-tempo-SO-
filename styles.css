@@ -72,7 +72,6 @@ i { font-style: italic; }
   font-size: clamp(2.3rem, 6.2vw, 4.15rem);
   line-height: 1.03;
   letter-spacing: -0.035em;
-  max-width: 16ch;
 }
 
 .standfirst {
