@@ -1,98 +1,101 @@
 # Linha do tempo dos sistemas operacionais
 
 Página estática com 28 marcos da história dos sistemas operacionais, de 1956 a 2026.
-O conteúdo vem do documento `Linha do Tempo SO.docx`.
+O conteúdo original veio do documento `Linha do Tempo SO.docx`.
+
+Todo o conteúdo vive em **`dados.json`**. O `index.html` é só a casca: ele lê o JSON e
+monta a linha do tempo e o diagrama de linhagens a partir dele.
 
 ## Publicar no GitHub Pages
 
+O repositório já está configurado. Para publicar alterações:
+
 ```bash
-git init
 git add .
-git commit -m "Linha do tempo dos sistemas operacionais"
-git branch -M main
-git remote add origin https://github.com/USUARIO/REPOSITORIO.git
-git push -u origin main
+git commit -m "Atualiza a linha do tempo"
+git push
 ```
 
-Depois, no repositório: **Settings → Pages → Source: Deploy from a branch**,
-escolha `main` e a pasta `/ (root)`. Em um ou dois minutos o site fica em
-`https://USUARIO.github.io/REPOSITORIO/`.
+No repositório, em **Settings → Pages**, a origem deve estar em *Deploy from a branch*,
+com `main` e a pasta `/ (root)`. O site fica em
+`https://andreidasilva.github.io/linha-tempo-SO-/`.
 
 ## Ver antes de publicar
 
-Abrir `index.html` no navegador já funciona. Para servir localmente:
+A página lê o `dados.json` com `fetch`, e o navegador bloqueia isso em arquivos abertos
+direto do disco. Então **abrir o `index.html` com duplo clique não funciona**. Sirva a pasta:
 
 ```bash
 python3 -m http.server 8000
 ```
 
-E acessar `http://localhost:8000`.
+E acesse `http://localhost:8000`.
 
 ## Arquivos
 
 | Arquivo | O que faz |
 | --- | --- |
-| `index.html` | Todo o conteúdo da linha do tempo |
+| `dados.json` | **Todo o conteúdo**: faixas do diagrama, épocas e marcos |
+| `index.html` | A casca da página: cabeçalho, diagrama vazio e rodapé |
 | `styles.css` | Cores, tipografia e layout |
-| `chart.js` | Monta o diagrama de linhagens a partir do HTML |
+| `timeline.js` | Lê o `dados.json` e monta a linha do tempo |
+| `chart.js` | Desenha o diagrama de linhagens |
 | `scroll.js` | Acende cada marco conforme a rolagem e move o cursor de ano |
-| `editor.html` | Página de configuração para acrescentar marcos |
-| `editor.css`, `editor.js` | Estilo e lógica da página de configuração |
+| `editor.html` | Página para acrescentar, alterar e remover marcos |
+| `editor.css`, `editor.js` | Estilo e lógica da página de edição |
 | `.nojekyll` | Impede o GitHub de processar a pasta com o Jekyll |
 
-O texto fica todo no `index.html`. Os scripts leem o próprio HTML, então
-sem JavaScript a linha do tempo continua completa — só o diagrama não aparece.
-
-## Acrescentar um marco pela página de configuração
+## Editar pela página de edição
 
 Abra `editor.html` — publicado em
 `https://andreidasilva.github.io/linha-tempo-SO-/editor.html`, ou local com
 `python3 -m http.server` e depois `http://localhost:8000/editor.html`.
 
-Preencha ano, título, descrição e faixa do diagrama. A lista ao lado mostra em tempo real
-onde o marco vai entrar. Ao confirmar, a página monta um `index.html` completo para baixar:
-o marco entra na época certa e na posição cronológica correta, o intervalo de anos do título
-da época se ajusta e a contagem de marcos é reescrita por extenso.
+Ela lista os marcos agrupados por época, com **Editar** e **Remover** em cada linha, e um
+formulário para acrescentar novos. A época é escolhida pelo ano, mas dá para trocar no
+select. Ao terminar, clique em **Baixar dados.json**, substitua o arquivo na pasta e
+envie com `git push`.
 
-O site é estático, então **a página não grava nada no servidor**. Depois de baixar:
+O site é estático: **a página não grava nada no servidor**, só monta o arquivo.
 
-```bash
-# substitua o index.html da pasta pelo arquivo baixado, então:
-git add index.html
-git commit -m "Novo marco"
-git push
+## Editar o JSON à mão
+
+A estrutura é:
+
+```json
+{
+  "faixas": [
+    { "id": "linux", "nome": "Linux", "inicio": 1991, "fim": 2026 }
+  ],
+  "epocas": [
+    {
+      "nome": "Mobilidade, nuvem e contêineres",
+      "marcos": [
+        {
+          "ano": 2008,
+          "titulo": "Android",
+          "texto": "Descrição do marco.",
+          "faixa": "mobile",
+          "curto": "Android"
+        }
+      ]
+    }
+  ]
+}
 ```
 
-Abrir o `editor.html` com duplo clique não funciona: o navegador bloqueia a leitura de
-arquivos locais. Nesse caso a própria página oferece um seletor para escolher o
-`index.html` à mão.
+- **`faixas`** são as linhas do diagrama. `inicio` e `fim` definem o comprimento da barra.
+- **`epocas`** são os capítulos da linha do tempo. O intervalo de anos que aparece ao lado
+  do título é calculado a partir dos marcos, não precisa ser escrito.
+- **`faixa`** de um marco deve ser o `id` de uma faixa. Em branco, o marco aparece na linha
+  do tempo mas não ganha marcador no diagrama.
+- **`curto`** é o nome que aparece ao passar o mouse no marcador.
+- **`texto`** aceita `<i>termo</i>` para termos em outro idioma. Qualquer outra marcação é
+  exibida como texto literal, não interpretada.
 
-## Editar à mão
+Não é preciso se preocupar com ordem: a página ordena as épocas e os marcos por ano.
+A contagem de marcos na abertura e no rodapé também é calculada sozinha.
 
-**Mudar um texto:** procure o ano no `index.html` e edite o `<h3>` e o `<p>`.
-
-**Acrescentar um marco:** copie um bloco `<article class="entry">` inteiro e ajuste:
-
-```html
-<article class="entry" id="a1998" data-year="1998" data-lane="windows" data-short="Windows 98">
-  <p class="entry-year">1998</p>
-  <div class="entry-body">
-    <h3>Windows 98</h3>
-    <p>Descrição do marco.</p>
-  </div>
-</article>
-```
-
-- `id` precisa ser único (o diagrama usa isso para rolar até o marco).
-- `data-lane` diz em qual faixa do diagrama o marcador aparece. Os valores
-  disponíveis são `mainframe`, `unix`, `pc`, `vms`, `apple`, `windows`, `linux` e `mobile`,
-  definidos no topo do `chart.js`. Sem `data-lane`, o marco entra na linha do tempo
-  mas não ganha marcador no diagrama.
-- `data-short` é o nome curto que aparece ao passar o mouse no marcador.
-
-**Acrescentar uma faixa ao diagrama:** edite a lista `LANES` no `chart.js`.
-
-**Mudar as cores:** as variáveis estão no topo do `styles.css`. As seis cores
-`--era-1` a `--era-6` formam a rampa que avança com o tempo — são usadas nos
-títulos de época, nos anos, nos marcadores e no gradiente das faixas. O bloco
+As seis cores `--era-1` a `--era-6`, no topo do `styles.css`, formam a rampa que avança com
+o tempo e são distribuídas entre as épocas na ordem em que elas aparecem. O bloco
 `prefers-color-scheme: dark` logo abaixo define as versões para tema escuro.

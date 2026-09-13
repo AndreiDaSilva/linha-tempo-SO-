@@ -393,6 +393,29 @@ i { font-style: italic; }
   100%    { background: transparent; }
 }
 
+/* ---------- mensagens de carregamento e falha ---------- */
+
+.loading,
+.aviso {
+  max-width: 68rem;
+  margin: clamp(2rem, 5vh, 3rem) auto;
+  padding: 1rem 1.15rem;
+  border-left: 2px solid var(--era-4);
+  background: var(--paper-sunk);
+  font-size: 0.95rem;
+  line-height: 1.65;
+  color: var(--ink-soft);
+}
+
+code {
+  padding: 0.1em 0.3em;
+  border-radius: 3px;
+  background: var(--paper-sunk);
+  font: 400 0.88em/1 var(--mono);
+}
+
+.aviso code { background: var(--paper); }
+
 /* ---------- rodapé ---------- */
 
 .colophon {

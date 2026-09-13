@@ -1,5 +1,5 @@
-/* Página de configuração. Herda as variáveis de styles.css e veste
-   como ferramenta: mais densa, com os controles em evidência. */
+/* Página de edição. Herda as variáveis de styles.css e veste como
+   ferramenta: mais densa, com os controles em evidência. */
 
 .tool-head {
   max-width: 68rem;
@@ -8,9 +8,7 @@
 }
 
 .tool-back { margin-bottom: 1.5rem; font-size: 0.9rem; }
-
-.tool-back a,
-.tool-note a { color: var(--era-4); text-underline-offset: 3px; }
+.tool-back a { color: var(--era-4); text-underline-offset: 3px; }
 
 .tool-head h1 {
   font-size: clamp(1.9rem, 4.5vw, 2.9rem);
@@ -20,15 +18,8 @@
 
 .tool-note {
   margin-top: 1rem;
-  max-width: 54ch;
+  max-width: 58ch;
   color: var(--ink-soft);
-}
-
-code {
-  padding: 0.1em 0.3em;
-  border-radius: 3px;
-  background: var(--paper-sunk);
-  font: 400 0.88em/1 var(--mono);
 }
 
 .tool-status,
@@ -39,11 +30,15 @@ code {
   border-left: 2px solid var(--era-4);
   background: var(--paper-sunk);
   font-size: 0.92rem;
+  line-height: 1.6;
   color: var(--ink-soft);
 }
 
 .tool-status[data-tone="erro"],
 .tool-fallback { border-left-color: #b0122e; }
+
+.tool-status code,
+.tool-fallback code { background: var(--paper); }
 
 .tool-file { display: block; margin-top: 0.9rem; }
 .tool-file input { font: inherit; font-size: 0.85rem; }
@@ -60,7 +55,16 @@ code {
 
 /* ---------- formulário ---------- */
 
-.field { margin-bottom: 1.5rem; }
+.tool-form h2 {
+  font-size: 0.95rem;
+  margin-bottom: 1.1rem;
+  padding-bottom: 0.6rem;
+  border-bottom: 1px solid var(--rule);
+}
+
+.tool-side h2 { font-size: 0.95rem; }
+
+.field { margin-bottom: 1.4rem; }
 
 .field label {
   display: block;
@@ -82,6 +86,7 @@ code {
 }
 
 #f-year { font-family: var(--mono); font-weight: 500; }
+#f-era { font-size: 0.92rem; }
 
 .field textarea { resize: vertical; min-height: 7rem; }
 
@@ -108,6 +113,8 @@ code {
   font-size: 0.9rem;
 }
 
+.form-actions { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+
 .btn {
   padding: 0.62rem 1.1rem;
   border: 1px solid transparent;
@@ -126,7 +133,6 @@ code {
 }
 
 .btn-quiet {
-  margin-top: 0.7rem;
   background: transparent;
   border-color: var(--rule);
   color: var(--ink);
@@ -135,28 +141,59 @@ code {
 
 /* ---------- lista de marcos ---------- */
 
-.tool-side h2 {
-  font-size: 0.95rem;
-  margin-bottom: 0.9rem;
+.side-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.1rem;
+  padding-bottom: 0.6rem;
+  border-bottom: 1px solid var(--rule);
 }
 
-.toc {
-  border-top: 1px solid var(--rule);
-  font-size: 0.92rem;
+.side-count {
+  font: 400 0.82rem/1.4 var(--mono);
+  color: var(--ink-soft);
 }
+
+.toc { font-size: 0.92rem; }
 
 .toc-era {
-  padding: 1.1rem 0 0.35rem;
-  font: 600 0.82rem/1.4 var(--sans);
+  display: flex;
+  align-items: baseline;
+  gap: 0.9rem;
+  padding: 1.4rem 0 0.4rem;
+  font: 600 0.85rem/1.4 var(--sans);
   color: var(--era, var(--ink-soft));
+}
+
+.toc-era b {
+  font: 400 0.76rem/1.4 var(--mono);
+  font-weight: 400;
+  opacity: 0.8;
+}
+
+.toc-vazia {
+  padding: 0.3rem 0;
+  font-size: 0.85rem;
+  font-style: italic;
+  color: var(--ink-soft);
 }
 
 .toc-item {
   display: grid;
-  grid-template-columns: 3.6rem 1fr;
+  grid-template-columns: 3.4rem minmax(0, 1fr) auto;
   gap: 0.8rem;
-  padding: 0.28rem 0.5rem 0.28rem 0;
+  align-items: baseline;
+  padding: 0.3rem 0.45rem;
   border-radius: 3px;
+}
+
+.toc-item:hover { background: var(--paper-sunk); }
+
+.toc-item[data-state="editando"] {
+  background: color-mix(in srgb, var(--era-4) 14%, transparent);
+  font-weight: 600;
 }
 
 .toc-item b {
@@ -168,17 +205,35 @@ code {
 
 .toc-item span { line-height: 1.5; }
 
-.toc-item[data-state="novo"] {
-  background: color-mix(in srgb, var(--era-4) 15%, transparent);
-  font-weight: 600;
+.toc-acoes {
+  display: flex;
+  gap: 0.35rem;
+  opacity: 0.5;
+  transition: opacity 120ms ease;
 }
 
-.toc-item[data-state="previsto"] {
-  background: color-mix(in srgb, var(--era-4) 8%, transparent);
-  outline: 1px dashed color-mix(in srgb, var(--era-4) 45%, transparent);
+.toc-item:hover .toc-acoes,
+.toc-item:focus-within .toc-acoes,
+.toc-item[data-state="editando"] .toc-acoes { opacity: 1; }
+
+.mini {
+  padding: 0.15rem 0.5rem;
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  background: var(--paper);
+  color: var(--ink-soft);
+  font: 500 0.78rem/1.5 var(--sans);
+  cursor: pointer;
 }
 
-.toc-item[data-state="previsto"] span { color: var(--ink-soft); font-style: italic; }
+.mini:hover { color: var(--ink); border-color: var(--ink-soft); }
+.mini-perigo:hover { color: #b0122e; border-color: #b0122e; }
+
+.mini:focus-visible {
+  opacity: 1;
+  outline: 2px solid var(--era-4);
+  outline-offset: 1px;
+}
 
 /* ---------- saída ---------- */
 
@@ -188,24 +243,10 @@ code {
   border-top: 1px solid var(--rule);
 }
 
-.tool-out-note { margin-bottom: 1rem; color: var(--ink-soft); font-size: 0.92rem; }
-
-.tool-snippet { margin-top: 1.5rem; font-size: 0.9rem; }
-.tool-snippet summary { cursor: pointer; color: var(--ink-soft); }
-
-.tool-snippet pre {
-  margin-top: 0.8rem;
-  padding: 0.9rem;
-  overflow-x: auto;
-  border: 1px solid var(--rule);
-  border-radius: 3px;
-  background: var(--paper-sunk);
-  font: 400 0.8rem/1.6 var(--mono);
-  white-space: pre;
-}
+.tool-out-note { margin-top: 0.9rem; color: var(--ink-soft); font-size: 0.9rem; }
 
 .tool-steps {
-  margin: 1.75rem 0 0;
+  margin: 1.5rem 0 0;
   padding-left: 1.2rem;
   font-size: 0.9rem;
   line-height: 1.7;
@@ -215,4 +256,5 @@ code {
 @media (max-width: 760px) {
   .tool-grid { grid-template-columns: minmax(0, 1fr); }
   .tool-side { margin-top: 1rem; }
+  .toc-acoes { opacity: 1; }
 }

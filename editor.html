@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Adicionar um marco</title>
+<title>Editar a linha do tempo</title>
 <meta name="robots" content="noindex">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -15,81 +15,86 @@
 
 <header class="tool-head">
   <p class="tool-back"><a href="index.html">Voltar para a linha do tempo</a></p>
-  <h1>Adicionar um marco</h1>
-  <p class="tool-note">O site é estático, então esta página não grava nada no servidor.
-  Ela monta um <code>index.html</code> atualizado para você baixar, substituir no
-  repositório e enviar com <code>git push</code>.</p>
+  <h1>Editar a linha do tempo</h1>
+  <p class="tool-note">Acrescente, altere ou remova marcos. O site é estático, então esta
+  página não grava nada no servidor: ao terminar, baixe o <code>dados.json</code>,
+  substitua o arquivo no repositório e envie com <code>git push</code>.</p>
 </header>
 
-<p class="tool-status" id="status" role="status">Carregando a linha do tempo atual&hellip;</p>
+<p class="tool-status" id="status" role="status">Carregando o <code>dados.json</code>&hellip;</p>
 
 <p class="tool-fallback" id="fallback" hidden>
   O navegador bloqueia a leitura de arquivos locais quando a página é aberta direto do disco.
-  Escolha o <code>index.html</code> manualmente, ou sirva a pasta com
+  Escolha o <code>dados.json</code> manualmente, ou sirva a pasta com
   <code>python3 -m http.server</code>.
   <label class="tool-file">
-    <input type="file" id="file" accept=".html,text/html">
-    <span>Escolher index.html</span>
+    <input type="file" id="file" accept=".json,application/json">
   </label>
 </p>
 
 <div class="tool-grid" id="grid" hidden>
 
   <form class="tool-form" id="form" novalidate>
+    <h2 id="form-title">Novo marco</h2>
+
     <div class="field">
       <label for="f-year">Ano</label>
-      <input type="number" id="f-year" name="year" min="1940" max="2100" step="1"
-             inputmode="numeric" required>
-      <p class="field-help" id="year-help">Define em que época o marco entra e onde
-      o marcador cai no diagrama.</p>
+      <input type="number" id="f-year" min="1940" max="2100" step="1" inputmode="numeric" required>
     </div>
 
     <div class="field">
       <label for="f-title">Título</label>
-      <input type="text" id="f-title" name="title" maxlength="90" required>
+      <input type="text" id="f-title" maxlength="90" required>
     </div>
 
     <div class="field">
       <label for="f-text">Descrição</label>
-      <textarea id="f-text" name="text" rows="6" required></textarea>
-      <p class="field-help">Texto corrido, sem HTML. Só <code>&lt;i&gt;termo&lt;/i&gt;</code>
-      é aceito, para destacar termos em outro idioma.</p>
+      <textarea id="f-text" rows="6" required></textarea>
+      <p class="field-help">Texto corrido. Só <code>&lt;i&gt;termo&lt;/i&gt;</code> é aceito
+      como marcação, para termos em outro idioma.</p>
+    </div>
+
+    <div class="field">
+      <label for="f-era">Época</label>
+      <select id="f-era"></select>
+      <p class="field-help">Escolhida pelo ano, mas você pode mudar. O intervalo de anos
+      do título da época se ajusta sozinho.</p>
     </div>
 
     <div class="field">
       <label for="f-lane">Faixa no diagrama</label>
-      <select id="f-lane" name="lane"></select>
-      <p class="field-help">Sem faixa, o marco aparece na linha do tempo mas não
-      ganha marcador no diagrama.</p>
+      <select id="f-lane"></select>
+      <p class="field-help">Sem faixa, o marco aparece na linha do tempo mas não ganha
+      marcador no diagrama.</p>
     </div>
 
     <div class="field">
       <label for="f-short">Nome curto</label>
-      <input type="text" id="f-short" name="short" maxlength="28">
+      <input type="text" id="f-short" maxlength="28">
       <p class="field-help">Aparece ao passar o mouse no marcador. Em branco, usa o título.</p>
     </div>
 
     <p class="field-error" id="error" hidden></p>
 
-    <button type="submit" class="btn btn-add">Adicionar à linha do tempo</button>
+    <div class="form-actions">
+      <button type="submit" class="btn" id="submit">Acrescentar marco</button>
+      <button type="button" class="btn btn-quiet" id="cancel" hidden>Cancelar</button>
+    </div>
   </form>
 
   <section class="tool-side">
-    <h2>Onde vai entrar</h2>
+    <div class="side-head">
+      <h2>Marcos</h2>
+      <p class="side-count" id="count"></p>
+    </div>
     <div class="toc" id="toc"></div>
 
-    <div class="tool-out" id="out" hidden>
-      <h2>Pronto para baixar</h2>
-      <p class="tool-out-note" id="out-note"></p>
-      <button type="button" class="btn btn-download" id="download">Baixar index.html</button>
-      <details class="tool-snippet">
-        <summary>Ver o HTML do marco, para colar à mão</summary>
-        <pre id="snippet"></pre>
-        <button type="button" class="btn btn-quiet" id="copy">Copiar</button>
-      </details>
+    <div class="tool-out">
+      <button type="button" class="btn btn-download" id="download">Baixar dados.json</button>
+      <p class="tool-out-note" id="out-note">Nenhuma alteração ainda.</p>
       <ol class="tool-steps">
-        <li>Substitua o <code>index.html</code> da pasta do projeto pelo arquivo baixado.</li>
-        <li>Rode <code>git add index.html &amp;&amp; git commit -m "Novo marco" &amp;&amp; git push</code>.</li>
+        <li>Substitua o <code>dados.json</code> da pasta do projeto pelo arquivo baixado.</li>
+        <li>Rode <code>git add dados.json &amp;&amp; git commit -m "Atualiza marcos" &amp;&amp; git push</code>.</li>
         <li>O GitHub Pages republica o site em um ou dois minutos.</li>
       </ol>
     </div>

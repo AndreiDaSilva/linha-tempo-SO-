@@ -2,7 +2,7 @@
    Cada marco acende quando é alcançado e o trilho vertical se preenche atrás dele.
    No topo da tela, um cursor percorre 1956-2026 na mesma escala do diagrama. */
 
-(function () {
+window.ativarRolagem = function () {
   var entries = Array.prototype.slice.call(document.querySelectorAll('.entry'));
   var timeline = document.querySelector('.timeline');
   if (!entries.length || !timeline) return;
@@ -79,4 +79,4 @@
 
   window.addEventListener('resize', update);
   update();
-})();
+};

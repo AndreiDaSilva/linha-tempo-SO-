@@ -1,77 +1,49 @@
-/* Monta um index.html atualizado com os marcos acrescentados.
-   Trabalha sobre uma cópia do documento em memória: nada é gravado no servidor. */
+/* Edita o dados.json no navegador e devolve o arquivo pronto para baixar.
+   Nada é gravado no servidor: o site é estático. */
 
 (function () {
-  var LANES_PADRAO = [
-    { id: 'mainframe', name: 'Mainframes' },
-    { id: 'unix',      name: 'UNIX e derivados' },
-    { id: 'pc',        name: 'CP/M e MS-DOS' },
-    { id: 'vms',       name: 'VMS' },
-    { id: 'apple',     name: 'Apple' },
-    { id: 'windows',   name: 'Windows' },
-    { id: 'linux',     name: 'Linux' },
-    { id: 'mobile',    name: 'Móveis e nuvem' }
-  ];
-
-  var UNI = ['zero', 'um', 'dois', 'três', 'quatro', 'cinco', 'seis', 'sete', 'oito',
-             'nove', 'dez', 'onze', 'doze', 'treze', 'catorze', 'quinze', 'dezesseis',
-             'dezessete', 'dezoito', 'dezenove'];
-  var DEZ = ['', '', 'vinte', 'trinta', 'quarenta', 'cinquenta', 'sessenta', 'setenta',
-             'oitenta', 'noventa'];
-
-  function extenso(n) {
-    if (n < 20) return UNI[n];
-    if (n > 99) return String(n);
-    var d = Math.floor(n / 10), u = n % 10;
-    return DEZ[d] + (u ? ' e ' + UNI[u] : '');
-  }
-
-  function maiuscula(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
-
-  /* texto do usuário vira conteúdo, não marcação — só <i> passa */
-  function texto(t) {
-    return t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-            .replace(/&lt;i&gt;/g, '<i>').replace(/&lt;\/i&gt;/g, '</i>');
-  }
-
-  function atributo(t) {
-    return t.replace(/&/g, '&amp;').replace(/"/g, '&quot;')
-            .replace(/</g, '&lt;').replace(/>/g, '&gt;');
-  }
-
   var $ = function (id) { return document.getElementById(id); };
   var status = $('status'), fallback = $('fallback'), grid = $('grid');
-  var form = $('form'), erro = $('error'), toc = $('toc'), out = $('out');
-  var doc = null, novos = [], ultimoHTML = '';
+  var form = $('form'), erro = $('error'), toc = $('toc');
+
+  var dados = null;
+  var editando = null;   /* {ep: índice da época, mc: índice do marco} */
+  var alteracoes = 0;
 
   function aviso(msg, tom) {
-    status.textContent = msg;
+    status.innerHTML = msg;
     if (tom) status.dataset.tone = tom; else status.removeAttribute('data-tone');
-    status.hidden = false;
   }
 
   /* ---------- carregamento ---------- */
 
-  function adotar(html) {
-    doc = new DOMParser().parseFromString(html, 'text/html');
-    if (!doc.querySelector('.entry') || !doc.querySelector('.era')) {
-      aviso('Esse arquivo não parece ser o index.html da linha do tempo.', 'erro');
-      return;
+  function adotar(texto) {
+    var lido;
+    try {
+      lido = JSON.parse(texto);
+    } catch (e) {
+      return aviso('O arquivo não é um JSON válido: ' + e.message, 'erro');
     }
+    if (!lido || !Array.isArray(lido.epocas) || !lido.epocas.length) {
+      return aviso('Esse JSON não tem a lista <code>epocas</code>.', 'erro');
+    }
+    dados = lido;
+    dados.faixas = dados.faixas || [];
+    dados.epocas.forEach(function (e) { e.marcos = e.marcos || []; });
+    ordenar();
+
     fallback.hidden = true;
     grid.hidden = false;
-    aviso(marcos().length + ' marcos carregados. Preencha o formulário para acrescentar outro.');
+    preencherSelects();
     render();
+    aviso(totalMarcos() + ' marcos carregados em ' + dados.epocas.length + ' épocas.');
   }
 
-  fetch('index.html', { cache: 'no-store' })
-    .then(function (r) {
-      if (!r.ok) throw new Error(r.status);
-      return r.text();
-    })
+  fetch('dados.json', { cache: 'no-store' })
+    .then(function (r) { if (!r.ok) throw new Error(r.status); return r.text(); })
     .then(adotar)
     .catch(function () {
-      aviso('Não foi possível ler o index.html automaticamente.', 'erro');
+      aviso('Não foi possível ler o <code>dados.json</code> automaticamente.', 'erro');
       fallback.hidden = false;
     });
 
@@ -83,177 +55,189 @@
     fr.readAsText(f, 'utf-8');
   });
 
-  /* faixas do diagrama: lidas do próprio chart.js, para não duplicar a lista */
-  function preencherFaixas(lanes) {
-    var sel = $('f-lane');
-    sel.innerHTML = '';
-    var vazio = document.createElement('option');
-    vazio.value = '';
-    vazio.textContent = 'Sem faixa (só na linha do tempo)';
-    sel.appendChild(vazio);
-    lanes.forEach(function (l) {
-      var o = document.createElement('option');
-      o.value = l.id;
-      o.textContent = l.name;
-      sel.appendChild(o);
+  /* ---------- estado ---------- */
+
+  function ordenar() {
+    dados.epocas.forEach(function (e) {
+      e.marcos.sort(function (a, b) { return a.ano - b.ano; });
+    });
+    dados.epocas.sort(function (a, b) {
+      var x = a.marcos.length ? a.marcos[0].ano : Infinity;
+      var y = b.marcos.length ? b.marcos[0].ano : Infinity;
+      return x - y;
     });
   }
 
-  fetch('chart.js', { cache: 'no-store' })
-    .then(function (r) { return r.ok ? r.text() : Promise.reject(); })
-    .then(function (src) {
-      var re = /\{\s*id:\s*'(\w+)',\s*name:\s*'([^']*)'/g, m, achadas = [];
-      while ((m = re.exec(src))) achadas.push({ id: m[1], name: m[2] });
-      preencherFaixas(achadas.length ? achadas : LANES_PADRAO);
-    })
-    .catch(function () { preencherFaixas(LANES_PADRAO); });
+  function totalMarcos() {
+    return dados.epocas.reduce(function (n, e) { return n + e.marcos.length; }, 0);
+  }
 
-  /* ---------- leitura do documento ---------- */
+  function intervalo(epoca) {
+    if (!epoca.marcos.length) return '—';
+    var anos = epoca.marcos.map(function (m) { return +m.ano; });
+    return Math.min.apply(null, anos) + '–' + Math.max.apply(null, anos);
+  }
 
-  function eras() { return Array.prototype.slice.call(doc.querySelectorAll('.era')); }
-  function marcos() { return Array.prototype.slice.call(doc.querySelectorAll('.entry')); }
-  function marcosDe(era) { return Array.prototype.slice.call(era.querySelectorAll('.entry')); }
-  function ano(e) { return +e.dataset.year; }
-
-  /* a época é a última cujo primeiro marco não passa do ano informado */
-  function eraDoAno(y) {
-    var lista = eras(), escolhida = lista[0];
-    lista.forEach(function (era) {
-      var anos = marcosDe(era).map(ano);
-      if (anos.length && Math.min.apply(null, anos) <= y) escolhida = era;
+  /* época sugerida: a última cujo primeiro marco não passa do ano */
+  function epocaDoAno(ano) {
+    var escolhida = 0;
+    dados.epocas.forEach(function (e, i) {
+      if (e.marcos.length && e.marcos[0].ano <= ano) escolhida = i;
     });
     return escolhida;
   }
 
-  function tituloEra(era) {
-    var h = era.querySelector('.era-head h2');
-    return h ? h.textContent.trim() : '';
+  function marcado() {
+    alteracoes++;
+    $('out-note').textContent = alteracoes === 1
+      ? '1 alteração pendente. Baixe o arquivo para aplicá-la.'
+      : alteracoes + ' alterações pendentes. Baixe o arquivo para aplicá-las.';
   }
 
-  function idLivre(y) {
-    var base = 'a' + y, id = base, n = 2;
-    while (doc.getElementById(id)) { id = base + '-' + n; n++; }
-    return id;
-  }
+  /* ---------- selects ---------- */
 
-  /* ---------- montagem ---------- */
-
-  function htmlDoMarco(d) {
-    return '<article class="entry" id="' + d.id + '" data-year="' + d.year + '"' +
-      (d.lane ? ' data-lane="' + d.lane + '"' : '') +
-      ' data-short="' + atributo(d.short) + '">\n' +
-      '        <p class="entry-year">' + d.year + '</p>\n' +
-      '        <div class="entry-body">\n' +
-      '          <h3>' + texto(d.title) + '</h3>\n' +
-      '          <p>' + texto(d.text) + '</p>\n' +
-      '        </div>\n' +
-      '      </article>';
-  }
-
-  function acrescentar(d) {
-    var era = eraDoAno(d.year);
-    var html = htmlDoMarco(d);
-    var seguinte = null;
-
-    marcosDe(era).forEach(function (e) {
-      if (!seguinte && ano(e) > d.year) seguinte = e;
+  function preencherSelects() {
+    var faixa = $('f-lane');
+    faixa.innerHTML = '';
+    var nenhuma = document.createElement('option');
+    nenhuma.value = '';
+    nenhuma.textContent = 'Sem faixa (só na linha do tempo)';
+    faixa.appendChild(nenhuma);
+    dados.faixas.forEach(function (f) {
+      var o = document.createElement('option');
+      o.value = f.id;
+      o.textContent = f.nome;
+      faixa.appendChild(o);
     });
-
-    if (seguinte) {
-      seguinte.insertAdjacentHTML('beforebegin', html + '\n\n      ');
-    } else {
-      var lista = marcosDe(era);
-      lista[lista.length - 1].insertAdjacentHTML('afterend', '\n\n      ' + html);
-    }
-
-    /* o intervalo do título da época passa a cobrir o novo marco */
-    var anos = marcosDe(era).map(ano);
-    var faixa = era.querySelector('.era-span');
-    if (faixa) {
-      faixa.textContent = Math.min.apply(null, anos) + '–' + Math.max.apply(null, anos);
-    }
-
-    /* contagem por extenso e intervalo geral */
-    var todos = marcos().map(ano);
-    var menor = Math.min.apply(null, todos), maior = Math.max.apply(null, todos);
-    var total = todos.length;
-
-    Array.prototype.forEach.call(doc.querySelectorAll('[data-count]'), function (el) {
-      el.textContent = maiuscula(extenso(total));
-    });
-    var de = doc.querySelector('[data-from]'), ate = doc.querySelector('[data-to]');
-    if (de) de.textContent = menor;
-    if (ate) ate.textContent = maior;
-
-    var chart = doc.getElementById('chart');
-    if (chart) {
-      chart.setAttribute('data-from', menor);
-      chart.setAttribute('data-to', maior);
-    }
-
-    novos.push(d.id);
-    ultimoHTML = html;
-    return { era: tituloEra(era), fora: d.year < 1956 || d.year > 2026 };
+    preencherEpocas();
   }
+
+  function preencherEpocas() {
+    var sel = $('f-era'), antes = sel.value;
+    sel.innerHTML = '';
+    dados.epocas.forEach(function (e, i) {
+      var o = document.createElement('option');
+      o.value = i;
+      o.textContent = intervalo(e) + '  ' + e.nome;
+      sel.appendChild(o);
+    });
+    if (antes !== '' && sel.options[antes]) sel.value = antes;
+  }
+
+  /* ao digitar o ano, sugere a época — sem atropelar uma escolha manual */
+  var epocaManual = false;
+  $('f-era').addEventListener('change', function () { epocaManual = true; });
+  $('f-year').addEventListener('input', function () {
+    if (epocaManual || !dados) return;
+    var y = parseInt(this.value, 10);
+    if (!isNaN(y)) $('f-era').value = epocaDoAno(y);
+  });
 
   /* ---------- lista ---------- */
 
-  function linha(y, titulo, estado) {
-    var li = document.createElement('div');
-    li.className = 'toc-item';
-    if (estado) li.dataset.state = estado;
-    var b = document.createElement('b');
-    b.textContent = y;
-    var s = document.createElement('span');
-    s.textContent = titulo;
-    li.appendChild(b);
-    li.appendChild(s);
-    return li;
+  function botao(rotulo, classe, acao) {
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.className = classe;
+    b.textContent = rotulo;
+    b.addEventListener('click', acao);
+    return b;
   }
 
   function render() {
     toc.innerHTML = '';
-    var y = parseInt($('f-year').value, 10);
-    var previa = !isNaN(y) && y >= 1940 && y <= 2100;
-    var eraPrevia = previa ? eraDoAno(y) : null;
-    var tituloPrevia = $('f-title').value.trim() || 'novo marco';
+    $('count').textContent = totalMarcos() + ' marcos';
 
-    eras().forEach(function (era, i) {
+    dados.epocas.forEach(function (epoca, ei) {
       var cab = document.createElement('p');
       cab.className = 'toc-era';
-      cab.style.setProperty('--era', 'var(--era-' + (i + 1) + ')');
-      cab.textContent = tituloEra(era);
+      cab.style.setProperty('--era', 'var(--era-' + Math.min(ei + 1, 6) + ')');
+      var anos = document.createElement('b');
+      anos.textContent = intervalo(epoca);
+      cab.appendChild(anos);
+      cab.appendChild(document.createTextNode(epoca.nome));
       toc.appendChild(cab);
 
       var grupo = document.createElement('div');
-      grupo.style.setProperty('--era', 'var(--era-' + (i + 1) + ')');
+      grupo.style.setProperty('--era', 'var(--era-' + Math.min(ei + 1, 6) + ')');
 
-      var colocada = false;
-      marcosDe(era).forEach(function (e) {
-        if (previa && era === eraPrevia && !colocada && ano(e) > y) {
-          grupo.appendChild(linha(y, tituloPrevia, 'previsto'));
-          colocada = true;
-        }
-        var h3 = e.querySelector('h3');
-        grupo.appendChild(linha(
-          ano(e),
-          h3 ? h3.textContent.trim() : '',
-          novos.indexOf(e.id) > -1 ? 'novo' : ''
-        ));
-      });
-      if (previa && era === eraPrevia && !colocada) {
-        grupo.appendChild(linha(y, tituloPrevia, 'previsto'));
+      if (!epoca.marcos.length) {
+        var vazia = document.createElement('p');
+        vazia.className = 'toc-vazia';
+        vazia.textContent = 'Sem marcos.';
+        grupo.appendChild(vazia);
       }
+
+      epoca.marcos.forEach(function (marco, mi) {
+        var li = document.createElement('div');
+        li.className = 'toc-item';
+        if (editando && editando.ep === ei && editando.mc === mi) li.dataset.state = 'editando';
+
+        var b = document.createElement('b');
+        b.textContent = marco.ano;
+
+        var s = document.createElement('span');
+        s.textContent = marco.titulo;
+
+        var acoes = document.createElement('div');
+        acoes.className = 'toc-acoes';
+        acoes.appendChild(botao('Editar', 'mini', function () { editar(ei, mi); }));
+        acoes.appendChild(botao('Remover', 'mini mini-perigo', function () { remover(ei, mi); }));
+
+        li.appendChild(b);
+        li.appendChild(s);
+        li.appendChild(acoes);
+        grupo.appendChild(li);
+      });
 
       toc.appendChild(grupo);
     });
   }
 
-  ['f-year', 'f-title'].forEach(function (id) {
-    $(id).addEventListener('input', function () { if (doc) render(); });
-  });
+  /* ---------- formulário ---------- */
 
-  /* ---------- envio ---------- */
+  function limpar() {
+    form.reset();
+    editando = null;
+    epocaManual = false;
+    erro.hidden = true;
+    $('form-title').textContent = 'Novo marco';
+    $('submit').textContent = 'Acrescentar marco';
+    $('cancel').hidden = true;
+    render();
+  }
+
+  function editar(ei, mi) {
+    var m = dados.epocas[ei].marcos[mi];
+    editando = { ep: ei, mc: mi };
+    epocaManual = true;
+    $('f-year').value = m.ano;
+    $('f-title').value = m.titulo;
+    $('f-text').value = m.texto;
+    $('f-era').value = ei;
+    $('f-lane').value = m.faixa || '';
+    $('f-short').value = m.curto && m.curto !== m.titulo ? m.curto : '';
+    $('form-title').textContent = 'Editando ' + m.ano + ' — ' + m.titulo;
+    $('submit').textContent = 'Salvar alterações';
+    $('cancel').hidden = false;
+    erro.hidden = true;
+    render();
+    $('f-year').focus();
+  }
+
+  function remover(ei, mi) {
+    var m = dados.epocas[ei].marcos[mi];
+    if (!window.confirm('Remover o marco de ' + m.ano + ', "' + m.titulo + '"?')) return;
+    dados.epocas[ei].marcos.splice(mi, 1);
+    if (editando && editando.ep === ei && editando.mc === mi) limpar();
+    ordenar();
+    preencherEpocas();
+    marcado();
+    render();
+    aviso('Marco de ' + m.ano + ' removido. Restam ' + totalMarcos() + '.');
+  }
+
+  $('cancel').addEventListener('click', limpar);
 
   function falhar(msg) {
     erro.textContent = msg;
@@ -264,62 +248,63 @@
     e.preventDefault();
     erro.hidden = true;
 
-    var y = parseInt($('f-year').value, 10);
+    var ano = parseInt($('f-year').value, 10);
     var titulo = $('f-title').value.trim();
-    var corpo = $('f-text').value.trim();
+    var texto = $('f-text').value.trim();
     var curto = $('f-short').value.trim() || titulo;
+    /* o select é override: sem escolha explícita, a época vem do ano */
+    var ei = epocaManual ? parseInt($('f-era').value, 10) : epocaDoAno(ano);
 
-    if (isNaN(y) || y < 1940 || y > 2100) return falhar('Informe um ano entre 1940 e 2100.');
+    if (isNaN(ano) || ano < 1940 || ano > 2100) return falhar('Informe um ano entre 1940 e 2100.');
     if (!titulo) return falhar('O título é obrigatório.');
-    if (!corpo) return falhar('A descrição é obrigatória.');
+    if (!texto) return falhar('A descrição é obrigatória.');
+    if (isNaN(ei) || !dados.epocas[ei]) return falhar('Escolha uma época.');
 
-    var r = acrescentar({
-      id: idLivre(y),
-      year: y,
-      lane: $('f-lane').value,
-      short: curto.slice(0, 28),
-      title: titulo,
-      text: corpo
-    });
+    var marco = {
+      ano: ano,
+      titulo: titulo,
+      texto: texto,
+      faixa: $('f-lane').value,
+      curto: curto.slice(0, 28)
+    };
 
-    form.reset();
-    render();
+    var acao;
+    if (editando) {
+      dados.epocas[editando.ep].marcos.splice(editando.mc, 1);
+      acao = 'atualizado';
+    } else {
+      acao = 'acrescentado';
+    }
+    dados.epocas[ei].marcos.push(marco);
 
-    out.hidden = false;
-    $('snippet').textContent = ultimoHTML;
-    $('out-note').textContent = novos.length === 1
-      ? 'Um marco acrescentado, na época "' + r.era + '".'
-      : novos.length + ' marcos acrescentados. O arquivo traz todos.';
-
-    aviso('Marco de ' + y + ' acrescentado em "' + r.era + '". ' +
-      (r.fora
-        ? 'Atenção: o ano está fora de 1956-2026, então ajuste à mão a frase de abertura, que fala em setenta anos.'
-        : 'Baixe o index.html ao lado quando terminar.'),
-      r.fora ? 'erro' : '');
-
+    ordenar();
+    preencherEpocas();
+    marcado();
+    limpar();
+    aviso('Marco de ' + ano + ' ' + acao + ' em "' + dados.epocas[ei].nome + '". ' +
+          'São ' + totalMarcos() + ' marcos.');
     $('f-year').focus();
   });
 
+  /* ---------- saída ---------- */
+
   $('download').addEventListener('click', function () {
-    var html = '<!DOCTYPE html>\n' + doc.documentElement.outerHTML + '\n';
-    var blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+    if (!dados) return;
+    var texto = JSON.stringify(dados, null, 2) + '\n';
+    var blob = new Blob([texto], { type: 'application/json;charset=utf-8' });
     var url = URL.createObjectURL(blob);
     var a = document.createElement('a');
     a.href = url;
-    a.download = 'index.html';
+    a.download = 'dados.json';
     document.body.appendChild(a);
     a.click();
     a.remove();
     setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
   });
 
-  $('copy').addEventListener('click', function () {
-    var btn = this;
-    navigator.clipboard.writeText(ultimoHTML).then(function () {
-      btn.textContent = 'Copiado';
-      setTimeout(function () { btn.textContent = 'Copiar'; }, 1600);
-    }, function () {
-      btn.textContent = 'Não foi possível copiar';
-    });
+  window.addEventListener('beforeunload', function (e) {
+    if (!alteracoes) return;
+    e.preventDefault();
+    e.returnValue = '';
   });
 })();

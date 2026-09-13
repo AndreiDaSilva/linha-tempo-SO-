@@ -1,0 +1,280 @@
+{
+  "faixas": [
+    {
+      "id": "mainframe",
+      "nome": "Mainframes",
+      "inicio": 1956,
+      "fim": 1972
+    },
+    {
+      "id": "unix",
+      "nome": "UNIX e derivados",
+      "inicio": 1969,
+      "fim": 2026
+    },
+    {
+      "id": "pc",
+      "nome": "CP/M e MS-DOS",
+      "inicio": 1974,
+      "fim": 1995
+    },
+    {
+      "id": "vms",
+      "nome": "VMS",
+      "inicio": 1977,
+      "fim": 2000
+    },
+    {
+      "id": "apple",
+      "nome": "Apple",
+      "inicio": 1984,
+      "fim": 2026
+    },
+    {
+      "id": "windows",
+      "nome": "Windows",
+      "inicio": 1985,
+      "fim": 2026
+    },
+    {
+      "id": "linux",
+      "nome": "Linux",
+      "inicio": 1991,
+      "fim": 2026
+    },
+    {
+      "id": "mobile",
+      "nome": "Móveis e nuvem",
+      "inicio": 2007,
+      "fim": 2026
+    }
+  ],
+  "epocas": [
+    {
+      "nome": "Processamento em lote e tempo compartilhado",
+      "marcos": [
+        {
+          "ano": 1956,
+          "titulo": "GM-NAA I/O",
+          "texto": "Considerado um dos primeiros sistemas operacionais conhecidos. Automatizou a execução de programas, permitindo que os trabalhos fossem processados sequencialmente com menor necessidade de intervenção manual.",
+          "faixa": "mainframe",
+          "curto": "GM-NAA I/O"
+        },
+        {
+          "ano": 1961,
+          "titulo": "CTSS",
+          "texto": "Introduziu o conceito de compartilhamento de tempo (<i>time-sharing</i>). Vários usuários podiam utilizar o mesmo computador de forma interativa, compartilhando o tempo de processamento.",
+          "faixa": "mainframe",
+          "curto": "CTSS"
+        },
+        {
+          "ano": 1962,
+          "titulo": "Atlas e a memória virtual",
+          "texto": "O Atlas, da Universidade de Manchester, introduziu a memória virtual por paginação. O sistema passou a transferir automaticamente blocos entre a memória principal e o tambor magnético, liberando o programador de administrar esse espaço manualmente.",
+          "faixa": "mainframe",
+          "curto": "Atlas"
+        },
+        {
+          "ano": 1964,
+          "titulo": "IBM OS/360",
+          "texto": "Introduziu recursos de multiprogramação, permitindo que vários programas permanecessem na memória e que o processador alternasse entre eles, aumentando o aproveitamento dos recursos do computador.",
+          "faixa": "mainframe",
+          "curto": "IBM OS/360"
+        },
+        {
+          "ano": 1965,
+          "titulo": "Multics",
+          "texto": "Projeto conjunto do MIT, da Bell Labs e da General Electric para um sistema de tempo compartilhado de grande porte. Trouxe memória segmentada, sistema de arquivos hierárquico, anéis de proteção e ligação dinâmica. A saída da Bell Labs do projeto, em 1969, levou diretamente à criação do UNIX.",
+          "faixa": "mainframe",
+          "curto": "Multics"
+        }
+      ]
+    },
+    {
+      "nome": "Minicomputadores, portabilidade e os primeiros micros",
+      "marcos": [
+        {
+          "ano": 1969,
+          "titulo": "UNIX",
+          "texto": "Desenvolvido nos Bell Labs, o UNIX consolidou conceitos importantes como processos, sistema de arquivos, multitarefa, ambiente multiusuário e <i>shell</i>, tornando-se uma das principais influências para sistemas operacionais posteriores.",
+          "faixa": "unix",
+          "curto": "UNIX"
+        },
+        {
+          "ano": 1973,
+          "titulo": "UNIX é reescrito em C",
+          "texto": "O UNIX passa a ser escrito principalmente na linguagem C. Essa mudança aumentou sua portabilidade, permitindo que o sistema fosse adaptado para diferentes arquiteturas de computadores com menos esforço.",
+          "faixa": "unix",
+          "curto": "UNIX em C"
+        },
+        {
+          "ano": 1974,
+          "titulo": "CP/M",
+          "texto": "Um dos primeiros sistemas operacionais voltados aos microcomputadores. Oferecia recursos de gerenciamento de arquivos e execução de programas por meio de comandos de texto.",
+          "faixa": "pc",
+          "curto": "CP/M"
+        },
+        {
+          "ano": 1977,
+          "titulo": "BSD",
+          "texto": "Surge o <i>Berkeley Software Distribution</i> (BSD), uma evolução do UNIX desenvolvida na Universidade da Califórnia, Berkeley. O projeto incorporou melhorias ao UNIX e teve grande influência no desenvolvimento posterior de sistemas baseados nessa família.",
+          "faixa": "unix",
+          "curto": "BSD"
+        },
+        {
+          "ano": 1977,
+          "titulo": "VMS",
+          "texto": "A Digital Equipment Corporation lança o VMS para os minicomputadores VAX, reunindo memória virtual, processamento em lote e uso interativo no mesmo sistema. O arquiteto do projeto, David Cutler, viria a liderar o desenvolvimento do Windows NT.",
+          "faixa": "vms",
+          "curto": "VMS"
+        }
+      ]
+    },
+    {
+      "nome": "O computador pessoal e o software livre",
+      "marcos": [
+        {
+          "ano": 1981,
+          "titulo": "MS-DOS",
+          "texto": "O MS-DOS tornou-se o sistema operacional utilizado nos computadores IBM PC. Popularizou o uso de linha de comando, gerenciamento de arquivos e execução de programas em computadores pessoais.",
+          "faixa": "pc",
+          "curto": "MS-DOS"
+        },
+        {
+          "ano": 1983,
+          "titulo": "Projeto GNU",
+          "texto": "Richard Stallman anuncia o Projeto GNU, com o objetivo de construir um sistema operacional completo e livre, compatível com o UNIX. O projeto produziu o compilador, o <i>shell</i> e as ferramentas essenciais, mas ainda não tinha um núcleo em funcionamento quando o Linux surgiu.",
+          "faixa": "unix",
+          "curto": "GNU"
+        },
+        {
+          "ano": 1984,
+          "titulo": "Macintosh System Software",
+          "texto": "A Apple populariza uma interface gráfica baseada em janelas, ícones, menus e mouse, tornando a interação com o computador mais acessível para usuários sem conhecimento de comandos de texto.",
+          "faixa": "apple",
+          "curto": "Macintosh"
+        },
+        {
+          "ano": 1985,
+          "titulo": "Windows 1.0",
+          "texto": "A Microsoft lança o Windows 1.0, oferecendo um ambiente de interface gráfica sobre o MS-DOS. Introduziu recursos como janelas, menus, ícones e suporte ao mouse.",
+          "faixa": "windows",
+          "curto": "Windows 1.0"
+        },
+        {
+          "ano": 1987,
+          "titulo": "Minix",
+          "texto": "Andrew Tanenbaum publica o Minix, um sistema operacional pequeno e de código legível, criado para o ensino. Foi o ambiente que Linus Torvalds utilizava e cujas limitações motivaram o início do Linux.",
+          "faixa": "unix",
+          "curto": "Minix"
+        }
+      ]
+    },
+    {
+      "nome": "Popularização, código aberto e maturidade",
+      "marcos": [
+        {
+          "ano": 1990,
+          "titulo": "Windows 3.0",
+          "texto": "O Windows 3.0 alcança ampla adoção comercial, com melhor aproveitamento da memória, gerenciador de programas e desempenho gráfico superior ao das versões anteriores. Foi a versão que consolidou o Windows no mercado de computadores pessoais.",
+          "faixa": "windows",
+          "curto": "Windows 3.0"
+        },
+        {
+          "ano": 1991,
+          "titulo": "Linux",
+          "texto": "Linus Torvalds inicia o desenvolvimento do Linux. O projeto se destaca pelo modelo de software livre e código aberto, permitindo que seu código fosse estudado, modificado e distribuído.",
+          "faixa": "linux",
+          "curto": "Linux"
+        },
+        {
+          "ano": 1993,
+          "titulo": "Windows NT",
+          "texto": "A Microsoft lança o Windows NT, desenvolvido com uma arquitetura mais robusta para ambientes profissionais. Trouxe melhorias relacionadas à segurança, estabilidade, multitarefa, gerenciamento de memória e redes.",
+          "faixa": "windows",
+          "curto": "Windows NT"
+        },
+        {
+          "ano": 1995,
+          "titulo": "Windows 95",
+          "texto": "Popularizou recursos como o Menu Iniciar, barra de tarefas e <i>Plug and Play</i>, facilitando a utilização do sistema e a instalação e configuração de dispositivos de hardware.",
+          "faixa": "windows",
+          "curto": "Windows 95"
+        },
+        {
+          "ano": 2001,
+          "titulo": "Windows XP",
+          "texto": "Reuniu diferentes linhas do Windows em um sistema mais unificado. Trouxe melhorias de estabilidade, segurança, interface gráfica, gerenciamento de hardware e conectividade de rede e internet.",
+          "faixa": "windows",
+          "curto": "Windows XP"
+        },
+        {
+          "ano": 2001,
+          "titulo": "Mac OS X",
+          "texto": "A Apple lança o Mac OS X, baseado em tecnologias UNIX. O sistema combinava uma base UNIX com uma interface gráfica moderna, oferecendo recursos de multitarefa, proteção de memória e maior estabilidade.",
+          "faixa": "apple",
+          "curto": "Mac OS X"
+        }
+      ]
+    },
+    {
+      "nome": "Mobilidade, nuvem e contêineres",
+      "marcos": [
+        {
+          "ano": 2007,
+          "titulo": "iPhone OS (atual iOS)",
+          "texto": "A Apple apresenta o iPhone com um sistema operacional desenvolvido para dispositivos móveis e uma interface multitoque, permitindo uma nova forma de interação diretamente pela tela.",
+          "faixa": "mobile",
+          "curto": "iPhone OS"
+        },
+        {
+          "ano": 2008,
+          "titulo": "Android",
+          "texto": "O Android começa a ser utilizado comercialmente em smartphones. Baseado no kernel Linux, trouxe uma plataforma móvel flexível, suporte a aplicativos e possibilidade de utilização em dispositivos de diferentes fabricantes.",
+          "faixa": "mobile",
+          "curto": "Android"
+        },
+        {
+          "ano": 2011,
+          "titulo": "Chrome OS",
+          "texto": "O Google apresenta o Chrome OS, desenvolvido com foco em aplicações Web, serviços online e computação em nuvem, utilizando o navegador como elemento central da experiência.",
+          "faixa": "mobile",
+          "curto": "Chrome OS"
+        },
+        {
+          "ano": 2013,
+          "titulo": "Contêineres",
+          "texto": "Recursos do núcleo do Linux como <i>namespaces</i> e <i>cgroups</i> passam a ser usados para isolar processos e limitar seus recursos, e o Docker populariza esse modelo. As aplicações passam a ser distribuídas junto com suas dependências e executadas isoladas sobre o mesmo núcleo, sem a necessidade de uma máquina virtual completa.",
+          "faixa": "linux",
+          "curto": "Contêineres"
+        }
+      ]
+    },
+    {
+      "nome": "Atualização contínua e inteligência artificial",
+      "marcos": [
+        {
+          "ano": 2015,
+          "titulo": "Windows 10",
+          "texto": "A Microsoft passa a adotar um modelo de atualizações contínuas, permitindo que o sistema receba regularmente novos recursos, melhorias e atualizações de segurança.",
+          "faixa": "windows",
+          "curto": "Windows 10"
+        },
+        {
+          "ano": 2023,
+          "titulo": "Windows 11 e inteligência artificial",
+          "texto": "A Microsoft começa a integrar inteligência artificial diretamente ao Windows por meio do Copilot, oferecendo recursos de assistência, produtividade e interação com o sistema operacional.",
+          "faixa": "windows",
+          "curto": "Windows 11 e IA"
+        },
+        {
+          "ano": 2026,
+          "titulo": "Sistemas operacionais inteligentes e integrados",
+          "texto": "A evolução atual combina inteligência artificial, computação em nuvem, segurança avançada, virtualização e integração entre diferentes dispositivos. Os sistemas operacionais passam a atuar não apenas como gerenciadores de hardware e software, mas também como plataformas integradas de serviços e recursos inteligentes.",
+          "faixa": "",
+          "curto": "Sistemas operacionais inteligentes e integrados"
+        }
+      ]
+    }
+  ]
+}
