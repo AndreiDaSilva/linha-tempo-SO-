@@ -76,6 +76,8 @@
           '      <article class="entry' + (derradeiro ? ' entry-last' : '') + '"' +
           ' id="' + id(m.ano) + '" data-year="' + (+m.ano) + '"' +
           (m.faixa ? ' data-lane="' + atributo(m.faixa) + '"' : '') +
+          (m.recursos && m.recursos.length
+            ? ' data-recursos="' + atributo(m.recursos.join(' ')) + '"' : '') +
           ' data-short="' + atributo(m.curto || m.titulo) + '">\n' +
           '        <p class="entry-year">' + (+m.ano) + '</p>\n' +
           '        <div class="entry-body">\n' +
@@ -105,13 +107,15 @@
     if (de) de.textContent = menor;
     if (ate) ate.textContent = maior;
 
-    var chart = document.getElementById('chart');
-    if (chart) {
-      chart.setAttribute('data-from', menor);
-      chart.setAttribute('data-to', maior);
-    }
+    ['chart', 'recursos'].forEach(function (id) {
+      var el = document.getElementById(id);
+      if (!el) return;
+      el.setAttribute('data-from', menor);
+      el.setAttribute('data-to', maior);
+    });
 
     if (window.montarDiagrama) window.montarDiagrama(dados.faixas || []);
+    if (window.montarRecursos) window.montarRecursos(dados.recursos || []);
     if (window.ativarRolagem) window.ativarRolagem();
   }
 

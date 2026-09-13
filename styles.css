@@ -113,6 +113,9 @@ i { font-style: italic; }
 
 .chart-hint { display: none; }
 
+/* os nomes das capacidades são mais longos que os das famílias */
+.chart-recursos { --lane-col: 10.5rem; }
+
 .chart-grid {
   position: absolute;
   inset: 2rem 0 1.9rem var(--lane-col, 8.25rem);
@@ -463,6 +466,7 @@ code {
   }
 
   .chart { min-width: 42rem; }
+  .chart-recursos { min-width: 46rem; }
   .chart-hint { display: inline; }
 }
 

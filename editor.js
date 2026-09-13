@@ -109,7 +109,36 @@
       o.textContent = f.nome;
       faixa.appendChild(o);
     });
+    preencherRecursos();
     preencherEpocas();
+  }
+
+  function preencherRecursos() {
+    var caixa = $('f-recursos');
+    caixa.innerHTML = '';
+    (dados.recursos || []).forEach(function (r) {
+      var rot = document.createElement('label');
+      var inp = document.createElement('input');
+      inp.type = 'checkbox';
+      inp.value = r.id;
+      inp.name = 'recurso';
+      rot.appendChild(inp);
+      rot.appendChild(document.createTextNode(r.nome));
+      caixa.appendChild(rot);
+    });
+  }
+
+  function recursosMarcados() {
+    return Array.prototype.filter.call(
+      $('f-recursos').querySelectorAll('input'), function (i) { return i.checked; }
+    ).map(function (i) { return i.value; });
+  }
+
+  function marcarRecursos(lista) {
+    var tem = lista || [];
+    Array.prototype.forEach.call($('f-recursos').querySelectorAll('input'), function (i) {
+      i.checked = tem.indexOf(i.value) > -1;
+    });
   }
 
   function preencherEpocas() {
@@ -198,6 +227,7 @@
 
   function limpar() {
     form.reset();
+    marcarRecursos([]);
     editando = null;
     epocaManual = false;
     erro.hidden = true;
@@ -216,6 +246,7 @@
     $('f-text').value = m.texto;
     $('f-era').value = ei;
     $('f-lane').value = m.faixa || '';
+    marcarRecursos(m.recursos);
     $('f-short').value = m.curto && m.curto !== m.titulo ? m.curto : '';
     $('form-title').textContent = 'Editando ' + m.ano + ' — ' + m.titulo;
     $('submit').textContent = 'Salvar alterações';
@@ -265,7 +296,8 @@
       titulo: titulo,
       texto: texto,
       faixa: $('f-lane').value,
-      curto: curto.slice(0, 28)
+      curto: curto.slice(0, 28),
+      recursos: recursosMarcados()
     };
 
     var acao;

@@ -98,6 +98,36 @@
   border-color: transparent;
 }
 
+.field-checks {
+  margin: 0 0 1.4rem;
+  padding: 0;
+  border: 0;
+}
+
+.field-checks legend {
+  padding: 0;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.checks {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.3rem 0.9rem;
+}
+
+.checks label {
+  display: flex;
+  align-items: baseline;
+  gap: 0.4rem;
+  font-size: 0.86rem;
+  line-height: 1.35;
+  cursor: pointer;
+}
+
+.checks input { accent-color: var(--era-4); }
+
 .field-help {
   margin-top: 0.4rem;
   font-size: 0.85rem;
